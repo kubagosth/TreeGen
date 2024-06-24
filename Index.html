@@ -71,15 +71,23 @@
     document.getElementById("NodeSeparationX").addEventListener("input", update);
     document.getElementById("NodeSeparationY").addEventListener("input", update);
 
-    //TODO: Add file upload functionality
-
-    fetch("example/data.json")
-      .then(response => response.text())
-      .then(temp => {
-        data = JSON.parse(temp);
-      });
+    document.getElementById("file").addEventListener("input", 
+      function() {
+        const file = this.files[0];
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = function() {
+          data = JSON.parse(reader.result);
+          update();
+        };
+      }
+    );
 
     function update() {
+      if (!data) {
+        alert("Please select a JSON file");
+        return;
+      }
       d3.select("svg").remove();
 
       //Main parameters
