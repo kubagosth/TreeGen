@@ -13,7 +13,7 @@
     <tbody>
       <tr>
         <td>JSON File</td>
-        <td><input type="file" id="file"></td> <!--TODO: Use file input for file upload -->
+        <td><input type="file" id="file"></td>
       </tr>
       <tr>
         <td>Width</td>
@@ -71,6 +71,7 @@
     document.getElementById("NodeSeparationX").addEventListener("input", update);
     document.getElementById("NodeSeparationY").addEventListener("input", update);
 
+    //TODO support file types
     document.getElementById("file").addEventListener("input", 
       function() {
         const file = this.files[0];
@@ -91,27 +92,27 @@
       d3.select("svg").remove();
 
       //Main parameters
-      const width = document.getElementById("Width").value;
-      const height = document.getElementById("Height").value;
+      const width = parseInt(document.getElementById("Width").value);
+      const height = parseInt(document.getElementById("Height").value);
       const margin = {
-        top: document.getElementById("MarginTop").value,
-        bottom: document.getElementById("MarginBottom").value,
-        left: document.getElementById("MarginLeft").value,
-        right: document.getElementById("MarginRight").value
+        top: parseInt(document.getElementById("MarginTop").value),
+        bottom: parseInt(document.getElementById("MarginBottom").value),
+        left: parseInt(document.getElementById("MarginLeft").value),
+        right: parseInt(document.getElementById("MarginRight").value)
       };
 
       //Link parameters
       //TODO: Add link parameters
 
       //Node parameters
-      const nodeSeparationX = document.getElementById("NodeSeparationX").value;
-      const nodeSeparationY = document.getElementById("NodeSeparationY").value;
+      const nodeSeparationX = parseInt(document.getElementById("NodeSeparationX").value);
+      const nodeSeparationY = parseInt(document.getElementById("NodeSeparationY").value);
 
       //Circle parameters
-      let circleRadius = document.getElementById("CircleRadius").value;
+      let circleRadius = parseInt(document.getElementById("CircleRadius").value);
 
       //Text parameters
-      let vertialAlignmentForText = document.getElementById("TextVerticalAlignment").value;
+      let vertialAlignmentForText = parseInt(document.getElementById("TextVerticalAlignment").value);
 
 
       const svg = d3.select("body").append("svg")
