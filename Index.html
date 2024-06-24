@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chart.css">
+</head>
+
+<body>
+  <table class="settings-table">
+    <tbody>
+      <tr>
+        <td>JSON File</td>
+        <td><input type="file" id="file"></td> <!--TODO: Use file input for file upload -->
+      </tr>
+      <tr>
+        <td>Width</td>
+        <td><input type="text" id="Width" value="500"></td>
+      </tr>
+      <tr>
+        <td>Height</td>
+        <td><input type="text" id="Height" value="500"></td>
+      </tr>
+      <tr>
+        <td>Circle Radius</td>
+        <td><input type="text" id="CircleRadius" value="5"></td>
+      </tr>
+      <tr>
+        <td>Text Vertical Alignment</td>
+        <td><input type="text" id="TextVerticalAlignment" value="3"></td>
+      </tr>
+      <tr>
+        <td>Margin Top</td>
+        <td>Margin Bottom</td>
+        <td>Margin Left</td>
+        <td>Margin Right</td>
+      </tr>
+      <tr>
+        <td><input type="text" id="MarginTop" value="20"></td>
+        <td><input type="text" id="MarginBottom" value="20"></td>
+        <td><input type="text" id="MarginLeft" value="40"></td>
+        <td><input type="text" id="MarginRight" value="40"></td>
+      </tr>
+      <tr>
+        <td>Node Separation (X)</td>
+        <td><input type="text" id="NodeSeparationX" value="500"></td>
+      </tr>
+      <tr>
+        <td>Node Separation (Y)</td>
+        <td><input type="text" id="NodeSeparationY" value="500"></td>
+      </tr>
+    </tbody>
+  </table>
+  <button onclick="update()">Update</button>
+
+
+  <script>
+    let data;
+    //TODO: Add event listener for input fields for update real time
+
+    //TODO: Add file upload functionality
+
+    fetch("data.json")
+      .then(response => response.text())
+      .then(temp => {
+        data = JSON.parse(temp);
+      });
+
+    function update() {
+      d3.select("svg").remove();
+      
+      //Main parameters
+      const width = document.getElementById("Width").value;
+      const height = document.getElementById("Height").value;
+      const margin = { 
+        top: document.getElementById("MarginTop").value,
+        bottom: document.getElementById("MarginBottom").value,
+        left: document.getElementById("MarginLeft").value,
+        right: document.getElementById("MarginRight").value };
+
+      //Link parameters
+      //TODO: Add link parameters
+
+      //Node parameters
+      const nodeSeparationX = document.getElementById("NodeSeparationX").value;
+      const nodeSeparationY = document.getElementById("NodeSeparationY").value;
+      
+      //Circle parameters
+      let circleRadius = document.getElementById("CircleRadius").value;
+
+      //Text parameters
+      let vertialAlignmentForText = document.getElementById("TextVerticalAlignment").value;
+
+      
+      const svg = d3.select("body").append("svg")
+        .attr("width", width + margin.right + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      const root = d3.hierarchy(data);
+
+      const treeLayout = d3.tree().size([nodeSeparationY, nodeSeparationX]);
+
+      treeLayout(root);
+
+      const link = svg.selectAll(".link")
+        .data(root.links())
+        .enter().append("path")
+        .attr("class", "link")
+        .attr("d", d3.linkHorizontal()
+          .x(d => d.y)
+          .y(d => d.x));
+
+      const node = svg.selectAll(".node")
+        .data(root.descendants())
+        .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", d => "translate(" + d.y + "," + d.x + ")");
+
+      node.append("circle")
+        .attr("r", circleRadius);
+
+      node.append("text")
+        .attr("dy", vertialAlignmentForText)
+        .attr("x", d => d.children ? -10 : 10)
+        .style("text-anchor", d => d.children ? "end" : "start")
+        .text(d => d.data.name);
+    }
+
+  </script>
+</body>
+
+</html>
