@@ -14,6 +14,8 @@
       <tr>
         <td>JSON File</td>
         <td><input type="file" id="file"></td>
+        <td><button onclick="selectFileFromExample('data.json')">Example1</button></td>
+        <td><button onclick="selectFileFromExample('data copy.json')">Example2</button></td>
       </tr>
       <tr>
         <td>Width</td>
@@ -83,6 +85,13 @@
         };
       }
     );
+
+    function selectFileFromExample(fileName) {
+      fetch("Example/" + fileName).then((response) => response.json()).then((tempData) => {
+        data = tempData;
+        update();
+      })
+    }
 
     function update() {
       if (!data) {
